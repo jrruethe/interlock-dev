@@ -15,7 +15,8 @@ mkdir -p ${LUKS}
 mkdir -p ${OUTPUT}
 
 # Remove an existing container
-docker rm interlock-dev
+docker stop interlock-dev > /dev/null
+docker rm interlock-dev > /dev/null
 
 # Create a new container
 # Note that until this is automated, 

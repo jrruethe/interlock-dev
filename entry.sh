@@ -11,6 +11,7 @@ function on_exit()
 {
     for i in "${on_exit_items[@]}"
     do
+        echo $i
         eval $i
     done
 }
@@ -144,7 +145,10 @@ function run
    mount_device
 
    # Start the interlock application
-   ./interlock
+   ./interlock &
+   PID=$!
+   add_on_exit_reverse kill -9 ${PID}
+   read
 }
 
 # Determine what to do
