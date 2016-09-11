@@ -24,12 +24,13 @@ function add_on_exit_reverse()
     fi
 }
 
-add_on_exit_reverse echo Cleanup complete
-
 function build
 {
+   # Set the INTERLOCK_LOCAL_REPO environment variable
+   export INTERLOCK_LOCAL_REPO=/mnt/interlock
+
    # Set the USBARMORY_GIT environment variable
-   USBARMORY_GIT=/mnt/usbarmory
+   export USBARMORY_GIT=/mnt/usbarmory
 
    # Change to the buildroot directory
    cd /mnt/buildroot
