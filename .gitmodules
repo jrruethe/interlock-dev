@@ -1,9 +1,9 @@
 [submodule "interlock"]
 	path = interlock
-	url = https://github.com/inversepath/interlock.git
+	url = https://github.com/jrruethe/interlock.git
 [submodule "usbarmory"]
 	path = usbarmory
-	url = https://github.com/inversepath/usbarmory.git
+	url = https://github.com/jrruethe/usbarmory.git
 [submodule "buildroot"]
 	path = buildroot
-	url = https://github.com/buildroot/buildroot
+	url = https://github.com/jrruethe/buildroot.git
