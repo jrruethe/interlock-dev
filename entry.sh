@@ -135,11 +135,11 @@ function run
 
    # Activate the volume group
    vgchange -a y lvmvolume
-   add_on_exit_reverse lvchange -a n lvmvolume
+   add_on_exit_reverse vgchange -a n lvmvolume
    
    # Activate the logical volume
    lvchange -a y lvmvolume
-   add_on_exit_reverse vgchange -a n lvmvolume
+   add_on_exit_reverse lvchange -a n lvmvolume
    
    # Mount the device node
    mount_device
