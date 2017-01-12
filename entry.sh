@@ -62,7 +62,7 @@ function mount_device
    mkdir -p /dev/lvmvolume
 
    if [ ! -f /dev/lvmvolume/test ]; then
-      mknod /dev/lvmvolume/test b ${MAJOR} ${MINOR}
+      mknod /dev/lvmvolume/test b ${MAJOR} ${MINOR} || true
       add_on_exit_reverse rm -f /dev/lvmvolume/test
    fi
 }
@@ -145,10 +145,17 @@ function run
    mount_device
 
    # Start the interlock application
+   mkdir -p certs
    ./interlock &
    PID=$!
    add_on_exit_reverse kill -9 ${PID}
    read
+}
+
+function reset
+{
+   losetup -D
+   dmsetup remove_all -f
 }
 
 # Determine what to do
@@ -158,6 +165,9 @@ case "$1" in
       ;;
    run)
       run
+      ;;
+   reset)
+      reset
       ;;
    *)
       # Just start an interactive prompt
