@@ -40,7 +40,7 @@ function build
    make clean
 
    # Generate the configuration
-   make BR2_EXTERNAL=${USBARMORY_GIT}/software/buildroot usbarmory_mark_one_defconfig
+   make BR2_EXTERNAL=${USBARMORY_GIT}/software/buildroot interlock_defconfig
 
    # Build the image
    make BR2_EXTERNAL=${USBARMORY_GIT}/software/buildroot

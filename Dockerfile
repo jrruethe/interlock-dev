@@ -3,10 +3,10 @@ FROM debian:jessie
 # Set up a development image
 RUN echo deb http://httpredir.debian.org/debian testing main contrib non-free > /etc/apt/sources.list
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends build-essential
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends build-essential ca-certificates
 
 # Buildroot Dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends wget cpio python unzip rsync bc locales-all
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends wget cpio python unzip rsync bc locales-all file
 
 # Interlock Dependencies
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends git golang
