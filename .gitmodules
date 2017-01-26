@@ -1,9 +1,9 @@
 [submodule "interlock"]
-	path = interlock
+	path = interlock-dev/interlock
 	url = https://github.com/jrruethe/interlock.git
 [submodule "usbarmory"]
-	path = usbarmory
+	path = interlock-dev/usbarmory
 	url = https://github.com/jrruethe/usbarmory.git
 [submodule "buildroot"]
-	path = buildroot
+	path = interlock-dev/buildroot
 	url = https://github.com/jrruethe/buildroot.git

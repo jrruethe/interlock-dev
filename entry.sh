@@ -28,13 +28,13 @@ function add_on_exit_reverse()
 function build
 {
    # Set the INTERLOCK_LOCAL_REPO environment variable
-   export INTERLOCK_LOCAL_REPO=/mnt/interlock
+   export INTERLOCK_LOCAL_REPO=/interlock
 
    # Set the USBARMORY_GIT environment variable
-   export USBARMORY_GIT=/mnt/usbarmory
+   export USBARMORY_GIT=/usbarmory
 
    # Change to the buildroot directory
-   cd /mnt/buildroot
+   cd /buildroot
 
    # Clean up
    make clean
@@ -54,7 +54,7 @@ function mount_device
    # it doesn't appear in the device list of the container.
    # This function will manually create the device node.
    # It assumes that first entry in the device mapper is the LVM volume
-   # inside /mnt/luks/container. Untested if you are using LVM on the host!
+   # inside /luks/container. Untested if you are using LVM on the host!
 
    MAJOR=`cat /sys/block/dm-0/dev | awk -F ':' '{print $1}'`
    MINOR=`cat /sys/block/dm-0/dev | awk -F ':' '{print $2}'`
@@ -70,10 +70,10 @@ function mount_device
 function create
 {
    # Create the container if it doesn't exist
-   dd if=/dev/zero of=/mnt/luks/container bs=1M count=100
+   dd if=/dev/zero of=/luks/container bs=1M count=100
 
    # Loop it to a device
-   losetup /dev/loop0 /mnt/luks/container
+   losetup /dev/loop0 /luks/container
 
    # Create a physical volume
    pvcreate /dev/loop0
@@ -118,18 +118,18 @@ function create
 function run
 {
    # Change to the interlock directory
-   cd /mnt/interlock
+   cd /interlock
 
    # Compile the interlock application
    make
 
    # Create the container if it doesn't exist
-   if [ ! -f /mnt/luks/container ]; then
+   if [ ! -f /luks/container ]; then
       create
    fi
 
    # Loop to a device
-   losetup /dev/loop0 /mnt/luks/container
+   losetup /dev/loop0 /luks/container
    add_on_exit_reverse dmsetup remove_all
    add_on_exit_reverse losetup -d /dev/loop0
 

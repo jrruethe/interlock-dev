@@ -1,0 +1,33 @@
+user: interlock
+privileged: true
+interactive: true
+
+expose: 4430
+
+install:
+ - bc 
+ - build-essential 
+ - ca-certificates 
+ - cpio 
+ - cryptsetup 
+ - file 
+ - git 
+ - golang 
+ - less 
+ - lvm2 
+ - python 
+ - rsync 
+ - sudo 
+ - unzip 
+ - vim
+ - wget 
+
+copy: entry.sh
+app: /entry.sh
+
+volume:
+ - interlock
+ - usbarmory
+ - buildroot
+ - luks
+

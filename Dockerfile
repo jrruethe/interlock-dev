@@ -1,22 +1,81 @@
-FROM debian:jessie
+# interlock-dev 2017-01-25 21:09:31 -0500
+FROM phusion/baseimage:0.9.18
+MAINTAINER Unknown
 
-# Set up a development image
-RUN echo deb http://httpredir.debian.org/debian testing main contrib non-free > /etc/apt/sources.list
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends build-essential ca-certificates
+# Exposed Ports
+EXPOSE 4430
 
-# Buildroot Dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends wget cpio python unzip rsync bc locales-all file
+# Copy files into the image
 
-# Interlock Dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends git golang
+# SHA256: 954275920718877adcbfa737dd1a3b88ba6ff06570a58aa161d085003d21e7e9
+COPY entry.sh entry.sh
 
-# Test Dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends lvm2 cryptsetup sudo
+# Set working directory
+WORKDIR /home/interlock
 
-# User Dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends less vim
+# Run commands
+RUN `# Creating user / Adjusting user permissions`               &&            \
+     (groupadd -g 1000 interlock || true)                        &&            \
+     ((useradd -u 1000 -g 1000 -p interlock -m interlock) ||                   \
+      (usermod -u 1000 interlock && groupmod -g 1000 interlock)) &&            \
+     mkdir -p /home/interlock                                    &&            \
+     chown -R interlock:interlock /home/interlock /opt           &&            \
+                                                                               \
+    `# Updating Package List`                                    &&            \
+     DEBIAN_FRONTEND=noninteractive apt-get update               &&            \
+                                                                               \
+    `# Installing packages`                                      &&            \
+     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+     bc                                                                        \
+     build-essential                                                           \
+     ca-certificates                                                           \
+     cpio                                                                      \
+     cryptsetup                                                                \
+     file                                                                      \
+     git                                                                       \
+     golang                                                                    \
+     less                                                                      \
+     lvm2                                                                      \
+     python                                                                    \
+     rsync                                                                     \
+     sudo                                                                      \
+     unzip                                                                     \
+     vim                                                                       \
+     wget                                                                      \
+                                                                               \
+    `# Cleaning up after installation`                           &&            \
+     DEBIAN_FRONTEND=noninteractive apt-get clean                &&            \
+     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*               &&            \
+                                                                               \
+    `# Fixing permission errors for volume`                      &&            \
+     mkdir -p /interlock                                         &&            \
+     chown -R interlock:interlock /interlock                     &&            \
+     chmod -R 700 /interlock                                     &&            \
+                                                                               \
+    `# Fixing permission errors for volume`                      &&            \
+     mkdir -p /usbarmory                                         &&            \
+     chown -R interlock:interlock /usbarmory                     &&            \
+     chmod -R 700 /usbarmory                                     &&            \
+                                                                               \
+    `# Fixing permission errors for volume`                      &&            \
+     mkdir -p /buildroot                                         &&            \
+     chown -R interlock:interlock /buildroot                     &&            \
+     chmod -R 700 /buildroot                                     &&            \
+                                                                               \
+    `# Fixing permission errors for volume`                      &&            \
+     mkdir -p /luks                                              &&            \
+     chown -R interlock:interlock /luks                          &&            \
+     chmod -R 700 /luks
 
-COPY entry.sh /entry.sh
-ENTRYPOINT ["/entry.sh"]
+# Set up external volumes
+VOLUME interlock
+VOLUME usbarmory
+VOLUME buildroot
+VOLUME luks
 
+# Copy source dockerfiles into the image
+COPY Dockerfile.yml /Dockerfile.yml
+COPY Dockerfile     /Dockerfile
+
+# Enter the container
+CMD ["/sbin/my_init", "--quiet", "--", "setuser", "interlock", "/entry.sh"]
